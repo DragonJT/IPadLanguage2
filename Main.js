@@ -63,7 +63,7 @@ var mousedown = false;
 var text = '';
 var run_obj;
 var running = false;
-var frame = 0;
+var cursor = 0;
 
 function CreateButtons(buttons, color){
     return buttons.map(b=>{return {name:b, color}});
@@ -90,20 +90,42 @@ function GetPunctuation(){
 }
 
 function GetWS(){
-    return CreateButtons(['tab', 'space', 'new-line', '<-', 'run', 'stop'], 'rgb(255,150,200)');
+    return CreateButtons(['tab', 'space', 'new-line', '<-', 'run', 'stop', 'left-arrow', 'right-arrow'], 'rgb(255,150,200)');
 }
 
 function Update(){
+    function Insert(c){
+        text = text.substring(0, cursor) + c + text.substring(cursor);
+        cursor+=c.length;
+    }
+
+    function Backspace(){
+        if(cursor > 0){
+            text = text.substring(0, cursor-1) + text.substring(cursor);
+            cursor--;
+        }
+    }
+
     var button = DrawButtons([...GetLowerCase(), ...GetUpperCase(), ...GetDigit(), ...GetOperator(), ...GetPunctuation(), ...GetWS()]);
     if(button){
         if(button == 'tab'){
-            text+='\t';
+            Insert('\t');
         }
         else if(button == 'space'){
-            text+=' ';
+            Insert(' ');
+        }
+        else if(button == 'left-arrow'){
+            if(cursor>0){
+                cursor--;
+            }
+        }
+        else if(button == 'right-arrow'){
+            if(cursor<text.length){
+                cursor++;
+            }
         }
         else if(button == 'new-line'){
-            text+='\n';
+            Insert('\n');
         }
         else if(button == 'run'){
             run_obj = new Function('ctx', text)(ctx);
@@ -113,10 +135,10 @@ function Update(){
             running = false;
         }
         else if(button == '<-'){
-            text=text.substring(0, text.length-1);
+            Backspace();
         }
         else{
-            text+=button;
+            Insert(button);
         }
     }
 
@@ -124,6 +146,11 @@ function Update(){
     var y = ctx.canvas.height*0.55;
     ctx.font = '20px Arial';
     ctx.fillStyle = 'white';
+    var i = 0;
+    if(cursor==0){
+        ctx.fillStyle = 'white';
+        ctx.fillRect(x,y+20,2,18);
+    }
     for(var c of text){
         if(c=='\t'){
             x+=ctx.measureText(' ').width*4;
@@ -136,8 +163,13 @@ function Update(){
             x+=ctx.measureText(' ').width;
         }
         else{
-            ctx.fillText(c, x, y);
+            ctx.fillText(c, x, y+18);
             x+=ctx.measureText(c).width;
+        }
+        i++;
+        if(i==cursor){
+            ctx.fillStyle = 'white';
+            ctx.fillRect(x,y,2,18);
         }
     }
 
@@ -145,7 +177,6 @@ function Update(){
     if(running){
         run_obj.Update();
     }
-    frame++;
     requestAnimationFrame(Update);
 }
 
