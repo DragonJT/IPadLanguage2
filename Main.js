@@ -269,4 +269,21 @@ addEventListener('mouseup', MouseUp);
 addEventListener('touchstart', TouchStart);
 addEventListener('touchend', TouchEnd);
 addEventListener('resize', Resize);
+
+addEventListener('dragover', (e) => {
+    e.preventDefault()
+});
+addEventListener('drop', (e) => {
+    if(e.dataTransfer){
+        var file = e.dataTransfer.files[0];
+        var reader = new FileReader()
+        reader.onload = function() {
+            cursor = 0; 
+            text = reader.result;
+        }
+        reader.readAsText(file)
+        e.preventDefault()
+    }
+});
+
 Update();
