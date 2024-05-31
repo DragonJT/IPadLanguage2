@@ -61,7 +61,7 @@ var mousey;
 var clicked;
 var mousedown = false;
 var text = '';
-var run_func;
+var run_obj;
 var running = false;
 var frame = 0;
 
@@ -106,7 +106,7 @@ function Update(){
             text+='\n';
         }
         else if(button == 'run'){
-            run_func = new Function('ctx', text);
+            run_obj = new Function('ctx', text)(ctx);
             running = true;
         }
         else if(button == 'stop'){
@@ -143,7 +143,7 @@ function Update(){
 
     clicked = false;
     if(running){
-        run_func(ctx);
+        run_obj.Update();
     }
     frame++;
     requestAnimationFrame(Update);
