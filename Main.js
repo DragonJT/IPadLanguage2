@@ -179,10 +179,15 @@ function TouchEnd(e){
     mousedown = false;
 }
 
+function TouchCancel(e){
+    mousedown = false;
+}
+
 addEventListener('mousedown',MouseDown);
 addEventListener('mousemove',MouseMove);
 addEventListener('mouseup', MouseUp);
 addEventListener('touchstart', TouchStart);
 addEventListener('touchend', TouchEnd);
+addEventListener('touchcancel', TouchCancel);
 addEventListener('resize', Resize);
 Update();
