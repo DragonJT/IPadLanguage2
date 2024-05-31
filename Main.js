@@ -41,7 +41,7 @@ function Load(){
 }
 
 function Save(){
-    FileSaver('file.js', text);
+    FileSaver('file.png', text);
 }
 
 var ctx = CreateCanvas();
