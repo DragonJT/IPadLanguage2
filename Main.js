@@ -63,6 +63,7 @@ var mousedown = false;
 var text = '';
 var run_func;
 var running = false;
+var frame = 0;
 
 function CreateButtons(buttons, color){
     return buttons.map(b=>{return {name:b, color}});
@@ -141,7 +142,7 @@ function Update(){
     }
 
     clicked = false;
-    ctx.fillText(clicked+","+mousedown+","+mousex+","+mousey, x, y);
+    ctx.fillText(clicked+","+mousedown+","+mousex+","+mousey+","+frame, x, y);
     if(running){
         run_func(ctx);
     }
