@@ -9,6 +9,41 @@ function CreateCanvas(){
     return canvas.getContext('2d');
 }
 
+function FileLoader(oninput){
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = e => { 
+        var file = e.target.files[0]; 
+        var reader = new FileReader()
+        reader.onload = function() {
+            oninput(reader.result);
+        }
+        reader.readAsText(file)
+    }
+    input.click();
+}
+
+function FileSaver(filename, text){
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
+function Load(){
+    FileLoader(f=>{
+        cursor = 0; 
+        text = f;
+    });
+}
+
+function Save(){
+    FileSaver('file.js', text);
+}
+
 var ctx = CreateCanvas();
 
 function DrawButton(x,y,w,h,name,color){
@@ -62,7 +97,6 @@ var clicked;
 var mousedown = false;
 var text = '';
 var run_obj;
-var running = false;
 var cursor = 0;
 
 function CreateButtons(buttons, color){
@@ -90,7 +124,7 @@ function GetPunctuation(){
 }
 
 function GetWS(){
-    return CreateButtons(['tab', 'space', 'new-line', '<-', 'run', 'stop', 'left-arrow', 'right-arrow'], 'rgb(255,150,200)');
+    return CreateButtons(['tab', 'space', 'new-line', '<-', 'run', 'stop', 'left-arrow', 'right-arrow', 'fast-left', 'fast-right', 'save', 'load'], 'rgb(255,150,200)');
 }
 
 function Update(){
@@ -124,15 +158,32 @@ function Update(){
                 cursor++;
             }
         }
+        else if(button == 'fast-left'){
+            cursor-=10;
+            if(cursor<0){
+                cursor = 0;
+            }
+        }
+        else if(button == 'fast-right'){
+            cursor+=10;
+            if(cursor>text.length){
+                cursor = text.length;
+            }
+        }
+        else if(button == 'save'){
+            Save();
+        }
+        else if(button == 'load'){
+            Load();
+        }
         else if(button == 'new-line'){
             Insert('\n');
         }
         else if(button == 'run'){
             run_obj = new Function('ctx', text)(ctx);
-            running = true;
         }
         else if(button == 'stop'){
-            running = false;
+            run_obj = undefined;
         }
         else if(button == '<-'){
             Backspace();
@@ -149,7 +200,7 @@ function Update(){
     var i = 0;
     if(cursor==0){
         ctx.fillStyle = 'white';
-        ctx.fillRect(x,y+20,2,18);
+        ctx.fillRect(x,y,2,18);
     }
     for(var c of text){
         if(c=='\t'){
@@ -174,7 +225,7 @@ function Update(){
     }
 
     clicked = false;
-    if(running){
+    if(run_obj && run_obj.Update){
         run_obj.Update();
     }
     requestAnimationFrame(Update);
