@@ -170,7 +170,7 @@ function Resize(){
 }
 
 function TouchStart(e){
-    var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+    var touch = e.originalEvent.touches[0];
     mousex = touch.pageX;
     mousey = touch.pageY;
     mousedown = true;
