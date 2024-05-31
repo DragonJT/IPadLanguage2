@@ -175,11 +175,9 @@ function TouchStart(e){
     clicked = true;
 }
 
-function TouchEnd(e){
-    mousedown = false;
-}
-
-function TouchCancel(e){
+function TouchEnd(){
+    mousex = undefined;
+    mousey = undefined;
     mousedown = false;
 }
 
@@ -188,6 +186,5 @@ addEventListener('mousemove',MouseMove);
 addEventListener('mouseup', MouseUp);
 addEventListener('touchstart', TouchStart);
 addEventListener('touchend', TouchEnd);
-addEventListener('touchcancel', TouchCancel);
 addEventListener('resize', Resize);
 Update();
