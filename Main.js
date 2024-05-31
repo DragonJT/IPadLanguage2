@@ -146,6 +146,7 @@ function Update(){
     if(running){
         run_func(ctx);
     }
+    frame++;
     requestAnimationFrame(Update);
 }
 
