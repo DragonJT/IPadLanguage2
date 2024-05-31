@@ -141,6 +141,7 @@ function Update(){
     }
 
     clicked = false;
+    ctx.fillText(clicked+","+mousedown+","+mousex+","+mousey, x, y);
     if(running){
         run_func(ctx);
     }
